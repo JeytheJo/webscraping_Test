@@ -16,6 +16,7 @@ RATING_MAP = {
 def pegar_livros_da_pagina(pagina):
     url = BASE_URL.format(pagina)
     resp = requests.get(url)
+    resp.encoding = "utf-8"  # sem isso o £ vira "Â£" e quebra o float()
 
     if resp.status_code != 200:
         print(f"pagina {pagina} nao existe, parando")
@@ -31,7 +32,7 @@ def pegar_livros_da_pagina(pagina):
         preco_texto = livro.find("p", class_="price_color").text
         preco = float(preco_texto.replace("£", ""))
 
-        estrela = livro.p["class"][1]  # ex: ["star-rating", "Three"]
+        estrela = livro.p["class"][1] 
         avaliacao = RATING_MAP.get(estrela, 0)
 
         disponibilidade = livro.find("p", class_="instock availability").text.strip()
